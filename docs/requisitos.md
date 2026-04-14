@@ -88,3 +88,25 @@ instalado, sem dependências externas adicionais.
 ## 3. Requisitos de Interface
 
 ### RI01 — Menu principal
+1-Registrar 2-Devolver 3-Atrasados 0-Sair
+Opção:
+
+text
+
+### RI02 — Mensagens de confirmação
+Toda operação concluída com sucesso deve exibir mensagem de confirmação
+explícita ao usuário.
+
+### RI03 — Mensagens de erro
+Toda operação inválida deve exibir mensagem de erro descritiva sem
+encerrar o sistema.
+
+---
+
+## 4. Rastreabilidade Requisitos × Funcionalidades
+
+| Requisito | Método responsável | Arquivo |
+|---|---|---|
+| RF01, RN01, RN02, RN03 | `Sistema.registrar()` | `emprestimos.py` |
+| RF02, RN04–RN07 | `Sistema.devolver()` | `emprestimos.py` |
+| RF03, RN08, RN09 | `Sistema.listar_atrasados()` | `emprestimos.py` |
