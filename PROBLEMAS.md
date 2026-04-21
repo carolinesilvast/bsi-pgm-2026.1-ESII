@@ -1,8 +1,10 @@
 # Problemas Identificados — Leitura Inicial do Código
 
-Este arquivo é preenchido pelos estudantes na Aula 1 após a leitura do código legado.
-Descreva em linguagem livre tudo que parecer estranho, errado ou difícil de entender.
-Não é necessário usar termos técnicos neste momento.
+1. A lógica de cálculo de multa aparece repetida em mais de um lugar. Se precisar mudar a regra, será necessário alterar em vários pontos;
+2. O “envio de email”  aparece em três lugares diferentes. Além de repetido, está misturado com a lógica principal, o que dificulta manutenção;
+3. Não existe nenhuma forma de testar os métodos sem executar o sistema completo;
+4. A classe faz muitas coisas ao mesmo tempo: busca dados, calcula multa, altera estado, envia notificação. Isso deixa o código confuso;
+5. Se for criado um novo tipo, será necessário alterar o código em vários lugares.
 
 ---
 
