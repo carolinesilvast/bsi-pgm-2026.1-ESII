@@ -84,25 +84,25 @@ sequenceDiagram
     CLI->>Servico: registrar_emprestimo(id, nome, email, dias)
 
     Servico->>RepoEquip: buscar_por_id(id)
-    RepoEquip->>Equip: <<cria>> Equipamento
+    RepoEquip->>Equip: cria Equipamento
     Equip-->>RepoEquip: equipamento
     RepoEquip-->>Servico: equipamento
 
-    alt equipamento inválido ou indisponível
+    alt equipamento invalido ou indisponivel
         Servico-->>CLI: erro
-        CLI-->>Atendente: "Equipamento não disponível"
-    else disponível
+        CLI-->>Atendente: Equipamento nao disponivel
+    else disponivel
         Servico->>Servico: calcular_data_devolucao(dias)
-        Servico->>RepoEmp: criar_emprestimo(equipamento, nome, email, data_devolucao)
+        Servico->>RepoEmp: criar_emprestimo(dados)
         RepoEmp-->>Servico: emprestimo_criado
 
         Servico->>RepoEquip: marcar_indisponivel(id)
 
-        Servico->>Notif: enviar_notificacao_emprestimo(email, data_devolucao)
+        Servico->>Notif: enviar_notificacao_emprestimo(email, data)
         Notif-->>Servico: notificado
 
         Servico-->>CLI: sucesso
-        CLI-->>Atendente: "Empréstimo registrado com sucesso"
+        CLI-->>Atendente: Emprestimo registrado com sucesso
     end
 
 ### UC02 — Registrar Devolução
@@ -123,15 +123,15 @@ sequenceDiagram
     Servico->>RepoEmp: buscar_por_id(id_emprestimo)
     RepoEmp-->>Servico: emprestimo
 
-    alt empréstimo inválido ou já devolvido
+    alt emprestimo invalido ou ja devolvido
         Servico-->>CLI: erro
-        CLI-->>Atendente: "Empréstimo inválido ou já devolvido"
-    else válido
+        CLI-->>Atendente: Emprestimo invalido ou ja devolvido
+    else valido
         Servico->>Emprestimo: calcular_atraso()
         Emprestimo-->>Servico: dias_atraso
 
         Servico->>Servico: calcular_multa(tipo, dias_atraso)
-        Note over Servico: Multa conforme RN05<br/>Notebook: R$10/dia<br/>Projetor: R$15/dia<br/>Cabo: R$2/dia
+        Note over Servico: Multa por tipo: Notebook R$10/dia, Projetor R$15/dia, Cabo R$2/dia
 
         Servico->>RepoEmp: marcar_como_devolvido(id, multa)
         Servico->>RepoEquip: liberar_equipamento(equipamento_id)
@@ -140,7 +140,7 @@ sequenceDiagram
         Notif-->>Servico: notificado
 
         Servico-->>CLI: sucesso com multa
-        CLI-->>Atendente: "Devolução registrada. Multa: R$ X"
+        CLI-->>Atendente: Devolucao registrada. Multa: R$ X
     end
 
 ### UC03 — Listar Empréstimos em Atraso
@@ -159,7 +159,7 @@ sequenceDiagram
     Servico->>RepoEmp: buscar_atrasados_nao_devolvidos()
     RepoEmp-->>Servico: lista_emprestimos
 
-    loop para cada empréstimo em atraso
+    loop para cada emprestimo em atraso
         Servico->>Servico: calcular_atraso()
         Servico->>Servico: calcular_multa()
         Servico->>Notif: enviar_notificacao_atraso(email, dias, multa)
