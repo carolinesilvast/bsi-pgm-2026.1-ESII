@@ -52,20 +52,6 @@ A decomposição segue os princípios de **SRP (um motivo para mudar por classe)
 
 ---
 
-### Resumo da aplicação do SRP
-
-Cada classe tem **um único motivo para mudar**, identificado conforme stakeholder distinto:
-
-| Stakeholder | Mudança típica | Classe afetada |
-|-------------|----------------|----------------|
-| Setor de patrimônio | Alterar regra de multa | `ServicoEmprestimo` |
-| Equipe de TI | Trocar e-mail por SMS | `Notificador` |
-| DBA | Migrar de lista para banco de dados | `RepositorioEmprestimo`, `RepositorioEquipamento` |
-| Equipe de suporte | Mudar formato do relatório de atrasados | `CLI` |
-| Analista de domínio | Adicionar novo campo ao equipamento | `Equipamento` |
-
----
-
 ## Diagramas de sequência
 
 ### UC01 — Registrar Empréstimo
@@ -104,67 +90,3 @@ sequenceDiagram
         Servico-->>CLI: sucesso
         CLI-->>Atendente: Emprestimo registrado com sucesso
     end
-
-### UC02 — Registrar Devolução
-
-```mermaid
-sequenceDiagram
-    actor Atendente
-    participant CLI as InterfaceCLI
-    participant Servico as ServicoEmprestimo
-    participant RepoEmp as RepositorioEmprestimo
-    participant RepoEquip as RepositorioEquipamento
-    participant Notif as Notificador
-    participant Emprestimo as Emprestimo
-
-    Atendente->>CLI: informa id_emprestimo
-    CLI->>Servico: registrar_devolucao(id_emprestimo)
-
-    Servico->>RepoEmp: buscar_por_id(id_emprestimo)
-    RepoEmp-->>Servico: emprestimo
-
-    alt emprestimo invalido ou ja devolvido
-        Servico-->>CLI: erro
-        CLI-->>Atendente: Emprestimo invalido ou ja devolvido
-    else valido
-        Servico->>Emprestimo: calcular_atraso()
-        Emprestimo-->>Servico: dias_atraso
-
-        Servico->>Servico: calcular_multa(tipo, dias_atraso)
-        Note over Servico: Multa por tipo: Notebook R$10/dia, Projetor R$15/dia, Cabo R$2/dia
-
-        Servico->>RepoEmp: marcar_como_devolvido(id, multa)
-        Servico->>RepoEquip: liberar_equipamento(equipamento_id)
-
-        Servico->>Notif: enviar_notificacao_multa(email, multa)
-        Notif-->>Servico: notificado
-
-        Servico-->>CLI: sucesso com multa
-        CLI-->>Atendente: Devolucao registrada. Multa: R$ X
-    end
-
-### UC03 — Listar Empréstimos em Atraso
-
-```mermaid
-sequenceDiagram
-    actor Atendente
-    participant CLI as InterfaceCLI
-    participant Servico as ServicoEmprestimo
-    participant RepoEmp as RepositorioEmprestimo
-    participant Notif as Notificador
-
-    Atendente->>CLI: solicita lista de atrasados
-    CLI->>Servico: listar_atrasados()
-
-    Servico->>RepoEmp: buscar_atrasados_nao_devolvidos()
-    RepoEmp-->>Servico: lista_emprestimos
-
-    loop para cada emprestimo em atraso
-        Servico->>Servico: calcular_atraso()
-        Servico->>Servico: calcular_multa()
-        Servico->>Notif: enviar_notificacao_atraso(email, dias, multa)
-        Notif-->>Servico: notificado
-    end
-
-    Servico-->>CLI: lista_formatada
-    CLI-->>Atendente: exibe nome, dias atraso, multa
