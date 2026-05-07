@@ -90,6 +90,11 @@ sequenceDiagram
         Servico-->>CLI: sucesso
         CLI-->>Atendente: Emprestimo registrado com sucesso
     end
+```
+
+### UC02 — Registrar Devolução
+
+```mermaid
 sequenceDiagram
     actor Atendente
     participant CLI as InterfaceCLI
@@ -113,6 +118,7 @@ sequenceDiagram
         Emprestimo-->>Servico: dias_atraso
 
         Servico->>Servico: calcular_multa(tipo, dias_atraso)
+        Note over Servico: Multa por tipo: Notebook R$10/dia, Projetor R$15/dia, Cabo R$2/dia
 
         Servico->>RepoEmp: marcar_como_devolvido(id, multa)
         Servico->>RepoEquip: liberar_equipamento(equipamento_id)
@@ -123,6 +129,11 @@ sequenceDiagram
         Servico-->>CLI: sucesso com multa
         CLI-->>Atendente: Devolucao registrada. Multa: R$ X
     end
+```
+
+### UC03 — Listar Empréstimos em Atraso
+
+```mermaid
 sequenceDiagram
     actor Atendente
     participant CLI as InterfaceCLI
@@ -145,3 +156,4 @@ sequenceDiagram
 
     Servico-->>CLI: lista_formatada
     CLI-->>Atendente: exibe nome, dias atraso, multa
+```
