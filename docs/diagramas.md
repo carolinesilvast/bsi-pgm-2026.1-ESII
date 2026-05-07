@@ -90,3 +90,58 @@ sequenceDiagram
         Servico-->>CLI: sucesso
         CLI-->>Atendente: Emprestimo registrado com sucesso
     end
+sequenceDiagram
+    actor Atendente
+    participant CLI as InterfaceCLI
+    participant Servico as ServicoEmprestimo
+    participant RepoEmp as RepositorioEmprestimo
+    participant RepoEquip as RepositorioEquipamento
+    participant Notif as Notificador
+    participant Emprestimo as Emprestimo
+
+    Atendente->>CLI: informa id_emprestimo
+    CLI->>Servico: registrar_devolucao(id_emprestimo)
+
+    Servico->>RepoEmp: buscar_por_id(id_emprestimo)
+    RepoEmp-->>Servico: emprestimo
+
+    alt emprestimo invalido ou ja devolvido
+        Servico-->>CLI: erro
+        CLI-->>Atendente: Emprestimo invalido ou ja devolvido
+    else valido
+        Servico->>Emprestimo: calcular_atraso()
+        Emprestimo-->>Servico: dias_atraso
+
+        Servico->>Servico: calcular_multa(tipo, dias_atraso)
+
+        Servico->>RepoEmp: marcar_como_devolvido(id, multa)
+        Servico->>RepoEquip: liberar_equipamento(equipamento_id)
+
+        Servico->>Notif: enviar_notificacao_multa(email, multa)
+        Notif-->>Servico: notificado
+
+        Servico-->>CLI: sucesso com multa
+        CLI-->>Atendente: Devolucao registrada. Multa: R$ X
+    end
+sequenceDiagram
+    actor Atendente
+    participant CLI as InterfaceCLI
+    participant Servico as ServicoEmprestimo
+    participant RepoEmp as RepositorioEmprestimo
+    participant Notif as Notificador
+
+    Atendente->>CLI: solicita lista de atrasados
+    CLI->>Servico: listar_atrasados()
+
+    Servico->>RepoEmp: buscar_atrasados_nao_devolvidos()
+    RepoEmp-->>Servico: lista_emprestimos
+
+    loop para cada emprestimo em atraso
+        Servico->>Servico: calcular_atraso()
+        Servico->>Servico: calcular_multa()
+        Servico->>Notif: enviar_notificacao_atraso(email, dias, multa)
+        Notif-->>Servico: notificado
+    end
+
+    Servico-->>CLI: lista_formatada
+    CLI-->>Atendente: exibe nome, dias atraso, multa
