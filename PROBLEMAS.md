@@ -22,4 +22,9 @@ Exemplo de entradas:
 
 ## Revisão com vocabulário técnico
 
-*(Este espaço será preenchido após a Aula 4, quando os termos técnicos corretos forem aprendidos)*
+| Linguagem livre (Aula 1)                                            | Vocabulário técnico (hoje)                                                                                           |
+| ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| "O mesmo cálculo aparece duas vezes no código"                      | Violação de DRY: cálculo de multa duplicado em mais de um método                                                     |
+| "Tem código de e-mail misturado com o cálculo de multa"             | Responsabilidades misturadas: notificação e regra de negócio no mesmo método — viola SRP                             |
+| "A classe faz muita coisa ao mesmo tempo"                           | Sistema tem baixa coesão: acesso a dados, cálculo de multa, alteração de estado e notificação misturados — viola SRP |
+| "As listas de equipamentos estão fora da classe, soltas no arquivo" | Acoplamento por variável global: Sistema depende de estado compartilhado                                             |
