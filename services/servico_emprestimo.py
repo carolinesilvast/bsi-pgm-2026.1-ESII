@@ -1,4 +1,18 @@
 # ServicoEmprestimo: executar regras de negócio.
+
+import datetime
+
+from models.emprestimo import Emprestimo
+from repositories.repositorio_emprestimo import RepositorioEmprestimo
+from services.notificador import Notificador
+
+
+class ServicoEmprestimo:
+
+    def __init__(self):
+        self.repositorio = RepositorioEmprestimo()
+        self.notificador = Notificador()
+
     def registrar(self, equipamento_id, usuario_nome, usuario_email, dias):
         equipamento = self.repositorio.buscar_equipamento(equipamento_id)
 
@@ -42,19 +56,11 @@
         hoje = datetime.date.today()
         atraso = (hoje - emprestimo.data_devolucao).days
 
-        multa = 0
-
-        if atraso > 0:
-            if emprestimo.tipo == "notebook":
-                multa = atraso * 10.0
-            elif emprestimo.tipo == "projetor":
-                multa = atraso * 15.0
-            elif emprestimo.tipo == "cabo":
-                multa = atraso * 2.0
-
         equipamento = self.repositorio.buscar_equipamento(
             emprestimo.equipamento_id
         )
+
+        multa = equipamento.calcular_multa(atraso)
 
         if equipamento:
             equipamento.disponivel = True
@@ -71,16 +77,14 @@
 
         for e in self.repositorio.listar_emprestimos():
             if not e.devolvido and e.data_devolucao < hoje:
+
                 atraso = (hoje - e.data_devolucao).days
 
-                multa = 0
+                equipamento = self.repositorio.buscar_equipamento(
+                    e.equipamento_id
+                )
 
-                if e.tipo == "notebook":
-                    multa = atraso * 10.0
-                elif e.tipo == "projetor":
-                    multa = atraso * 15.0
-                elif e.tipo == "cabo":
-                    multa = atraso * 2.0
+                multa = equipamento.calcular_multa(atraso)
 
                 print(f"{e.usuario_nome} — {atraso} dias — R${multa:.2f}")
 
