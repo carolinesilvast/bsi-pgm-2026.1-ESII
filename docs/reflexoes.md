@@ -21,4 +21,5 @@ Conclusão sobre LSP: está satisfeito. Qualquer subclasse pode substituir Equip
 O ServicoEmprestimo deixou de criar suas próprias dependências e passou a trabalhar apenas com as dependências fornecidas externamente. Antes: o serviço controlava diretamente qual repositório e qual notificador eram usados, gerando acoplamento forte. Depois: dependências são fornecidas externamente pelo main.py, reduzindo o acoplamento.Não mandar “nas dependências” e depender apenas de comportamentos esperados facilita substituições de implementação sem mexer no serviço principal.
 Apoio conceitual (Valente, Cap. 5): a inversão de dependência reduz o impacto das mudanças, pois módulos de alto nível não dependem de detalhes concretos.
 Ao criar versões falsas (fakes) de repositório e notificador para testes, o ServicoEmprestimo continuou funcionando sem acessar dados reais nem enviar emails verdadeiros. Os benefícios reais envolvem a  melhoria da testabilidade do sistema e arquitetura preparada para evoluir com menor impacto entre os módulos.
+
 Conclusão: o DIP foi adotado com sucesso, deixando o sistema mais flexível e mais fácil de manter e testar.
