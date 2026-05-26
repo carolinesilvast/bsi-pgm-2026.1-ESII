@@ -3,18 +3,19 @@
 import datetime
 
 from models.emprestimo import Emprestimo
-from repositories.repositorio_emprestimo import RepositorioEmprestimo
-from services.notificador import Notificador
 
 
 class ServicoEmprestimo:
 
-    def __init__(self):
-        self.repositorio = RepositorioEmprestimo()
-        self.notificador = Notificador()
+    def __init__(self, repositorio, notificador):
+        self.repositorio = repositorio
+        self.notificador = notificador
 
     def registrar(self, equipamento_id, usuario_nome, usuario_email, dias):
-        equipamento = self.repositorio.buscar_equipamento(equipamento_id)
+
+        equipamento = self.repositorio.buscar_equipamento(
+            equipamento_id
+        )
 
         if equipamento is None or not equipamento.disponivel:
             print("Equipamento inválido ou indisponível")
@@ -35,17 +36,21 @@ class ServicoEmprestimo:
         )
 
         self.repositorio.salvar_emprestimo(emprestimo)
+
         equipamento.disponivel = False
 
-        self.notificador.enviar(
+        self.notificador.notificar_emprestimo(
             usuario_email,
-            f"empréstimo até {data_devolucao}"
+            data_devolucao
         )
 
         return True
 
     def devolver(self, emprestimo_id):
-        emprestimo = self.repositorio.buscar_emprestimo(emprestimo_id)
+
+        emprestimo = self.repositorio.buscar_emprestimo(
+            emprestimo_id
+        )
 
         if emprestimo is None or emprestimo.devolvido:
             print("Empréstimo inválido ou já devolvido")
@@ -54,7 +59,10 @@ class ServicoEmprestimo:
         emprestimo.devolvido = True
 
         hoje = datetime.date.today()
-        atraso = (hoje - emprestimo.data_devolucao).days
+
+        atraso = (
+            hoje - emprestimo.data_devolucao
+        ).days
 
         equipamento = self.repositorio.buscar_equipamento(
             emprestimo.equipamento_id
@@ -65,20 +73,24 @@ class ServicoEmprestimo:
         if equipamento:
             equipamento.disponivel = True
 
-        self.notificador.enviar(
+        self.notificador.notificar_devolucao(
             emprestimo.usuario_email,
-            f"multa R${multa:.2f}"
+            multa
         )
 
         print(f"Devolução registrada. Multa: R${multa:.2f}")
 
     def listar_atrasados(self):
+
         hoje = datetime.date.today()
 
         for e in self.repositorio.listar_emprestimos():
+
             if not e.devolvido and e.data_devolucao < hoje:
 
-                atraso = (hoje - e.data_devolucao).days
+                atraso = (
+                    hoje - e.data_devolucao
+                ).days
 
                 equipamento = self.repositorio.buscar_equipamento(
                     e.equipamento_id
@@ -86,9 +98,12 @@ class ServicoEmprestimo:
 
                 multa = equipamento.calcular_multa(atraso)
 
-                print(f"{e.usuario_nome} — {atraso} dias — R${multa:.2f}")
+                print(
+                    f"{e.usuario_nome} — "
+                    f"{atraso} dias — "
+                    f"R${multa:.2f}"
+                )
 
-                self.notificador.enviar(
-                    e.usuario_email,
-                    "você está em atraso!"
+                self.notificador.notificar_atraso(
+                    e.usuario_email
                 )
