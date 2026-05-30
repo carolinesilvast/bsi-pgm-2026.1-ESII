@@ -1,7 +1,7 @@
 # ADR-001: Escolha da Arquitetura do Sistema
 
 **Status:** Accepted
-**Data:** 2026-05-30
+-**Data:** 2026-05-30
 
 ## Contexto
 
