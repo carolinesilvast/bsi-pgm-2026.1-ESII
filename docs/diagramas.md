@@ -112,7 +112,7 @@ sequenceDiagram
 - `notificar_emprestimo(email, data_devolucao) -> None`
 - `notificar_devolucao(email, multa) -> None`
 - `notificar_atraso(email) -> None`
-```
+
 
 ## Diagrama de classes — v2.0
 
