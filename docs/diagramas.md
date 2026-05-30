@@ -112,3 +112,74 @@ sequenceDiagram
 - `notificar_emprestimo(email, data_devolucao) -> None`
 - `notificar_devolucao(email, multa) -> None`
 - `notificar_atraso(email) -> None`
+```
+
+## Diagrama de classes — v2.0
+
+```mermaid
+classDiagram
+
+class IRepositorioEmprestimo {
+    <<interface>>
+    +buscar_equipamento()
+    +salvar_emprestimo()
+    +buscar_emprestimo()
+    +marcar_indisponivel()
+    +marcar_disponivel()
+    +marcar_devolvido()
+    +listar_em_atraso()
+    +proximo_id_emprestimo()
+}
+
+class INotificador {
+    <<interface>>
+    +notificar_emprestimo()
+    +notificar_devolucao()
+    +notificar_atraso()
+}
+
+class RepositorioEmprestimo
+class Notificador
+
+class ServicoEmprestimo {
+    -repositorio
+    -notificador
+    +registrar()
+    +devolver()
+}
+
+class Equipamento {
+    <<abstract>>
+    +id
+    +nome
+    +tipo
+    +disponivel
+    +calcular_multa()
+}
+
+class Notebook
+class Projetor
+class Cabo
+
+class Emprestimo {
+    +id
+    +equipamento_id
+    +usuario
+    +email
+    +data_emprestimo
+    +data_devolucao
+}
+
+RepositorioEmprestimo ..|> IRepositorioEmprestimo
+Notificador ..|> INotificador
+
+ServicoEmprestimo --> IRepositorioEmprestimo
+ServicoEmprestimo --> INotificador
+
+Equipamento <|-- Notebook
+Equipamento <|-- Projetor
+Equipamento <|-- Cabo
+
+RepositorioEmprestimo o-- Equipamento
+RepositorioEmprestimo o-- Emprestimo
+```
