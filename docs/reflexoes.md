@@ -94,3 +94,21 @@ que armazena dados em listas e um `NotificadorFalso` que registra
 chamadas em vez de enviar e-mails. As regras de negócio ficam isoladas
 da infraestrutura, que era exatamente o que o RNF02 exigia e que a
 Aula 5 ainda não resolvia por completo.
+
+## Aula 08 — Testes
+
+O teste de integração verifica a colaboração entre os componentes reais do sistema, 
+como o repositório, o serviço e o notificador. Diferentemente dos testes de unidade, 
+ele valida se essas partes funcionam corretamente quando utilizadas em conjunto, 
+permitindo identificar problemas de integração, dependências incorretas ou falhas 
+na comunicação entre objetos.
+
+Por outro lado, esse tipo de teste não é tão eficiente para localizar a origem exata
+de um erro. Quando ocorre uma falha, pode ser necessário investigar vários componentes
+para descobrir a causa. Já os testes de unidade são mais isolados, rápidos e precisos
+para validar regras de negócio específicas, facilitando a identificação do ponto exato 
+do problema.
+
+Dessa forma, testes de integração e testes de unidade são complementares: os primeiros
+aumentam a confiança no funcionamento do sistema como um todo, enquanto os segundos 
+garantem a correção das partes individuais.
