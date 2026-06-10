@@ -12,3 +12,9 @@ def test_usuario_no_limite_nao_pode_emprestar():
         emprestimos_abertos=3,
         limite=3
     ) is False
+
+def test_usuario_acima_do_limite_nao_pode_emprestar():
+    assert pode_realizar_emprestimo(
+        emprestimos_abertos=5,
+        limite=3
+    ) is False
