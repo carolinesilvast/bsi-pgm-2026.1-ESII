@@ -15,6 +15,7 @@ def test_cobra_apenas_dias_que_ultrapassam_carencia():
         valor_por_dia=10.0
     ) == 30.0
 
+
 def test_multa_nunca_pode_ser_negativa():
     assert calcular_multa_com_carencia(
         dias_atraso=1,
