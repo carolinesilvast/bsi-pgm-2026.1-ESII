@@ -86,16 +86,8 @@ def notificador_spy():
 
 
 @pytest.fixture
-def servico(
-    repositorio_fake,
-    notificador_spy
-):
-    s = ServicoEmprestimo(
-        repositorio_fake
-    )
-
-    s.registrar_observer(
+def servico(repositorio_fake, notificador_spy):
+    return ServicoEmprestimo(
+        repositorio_fake,
         notificador_spy
     )
-
-    return s
