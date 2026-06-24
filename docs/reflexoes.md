@@ -30,3 +30,25 @@ de abstrações e permite a injeção de dependências. Isso pode ser observado 
 continuam utilizando dublês, como repositórios falsos e spies, diretamente no serviço. 
 Portanto, a Facade apenas simplifica o ponto de entrada da aplicação, sem alterar a arquitetura 
 baseada em DIP nem comprometer a testabilidade do sistema.
+
+## Aula 11 — Strategy e Observer
+
+Na Aula 11, a principal mudança foi a substituição de soluções baseadas em herança e acoplamento 
+direto por composição e desacoplamento de comportamento. No caso do Strategy, o cálculo de multa 
+que antes estava distribuído entre subclasses de Equipamento (Notebook, Projetor e Cabo) foi extraído
+para uma hierarquia de estratégias. Isso permitiu que o Equipamento deixasse de definir regras de 
+negócio e passasse apenas a delegar o cálculo para um objeto especializado. Essa evolução mostra 
+que a composição é mais flexível que a herança por tipo, pois permite trocar algoritmos em tempo 
+de execução sem alterar a estrutura da classe. Assim, o Open/Closed Principle é mantido de forma 
+mais eficiente, já que novas regras de multa podem ser adicionadas sem modificar o Context.
+
+No Observer, o Serviço de Empréstimo deixou de depender diretamente de um notificador concreto e 
+passou a emitir eventos para múltiplos observadores. Isso melhora o SRP, pois o serviço não precisa 
+mais saber como cada notificação é enviada, e também reforça o OCP, já que novos observadores podem 
+ser adicionados sem modificar o serviço. O DIP também é respeitado, pois o módulo de alto nível 
+depende de abstrações (Observer), não de implementações concretas.
+
+O uso de eventos como dict foi uma decisão consciente para simplificar a implementação inicial, 
+mas representa um smell (Primitive Obsession), pois falta tipagem e estrutura formal. 
+Segundo Valente (Cap. 6), essa simplificação é aceitável em fases iniciais, desde que seja refatorada
+posteriormente.
