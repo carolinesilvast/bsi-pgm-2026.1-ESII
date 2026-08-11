@@ -1,14 +1,17 @@
 from models.equipamento import Equipamento, Notebook, Projetor, Cabo
+from models.multa_strategy import MultaPorDia
 
 
 class FabricaEquipamento:
-    @staticmethod
-    def criar(tipo: str, id: int, nome: str) -> Equipamento:
-        if tipo == "notebook":
-            return Notebook(id, nome, tipo)
-        elif tipo == "projetor":
-            return Projetor(id, nome, tipo)
-        elif tipo == "cabo":
-            return Cabo(id, nome, tipo)
+    _registro = {
+        "notebook": (Notebook, MultaPorDia(10.0)),
+        "projetor": (Projetor, MultaPorDia(15.0)),
+        "cabo": (Cabo, MultaPorDia(2.0)),
+    }
 
-        raise ValueError(f"Tipo desconhecido: {tipo}")
+    @classmethod
+    def criar(cls, tipo: str, id: int, nome: str) -> Equipamento:
+        classe, strategy = cls._registro.get(tipo, (None, None))
+        if classe is None:
+            raise ValueError(f"Tipo desconhecido: {tipo}")
+        return classe(id, nome, tipo, strategy)
