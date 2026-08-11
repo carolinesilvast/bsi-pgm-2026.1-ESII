@@ -7,11 +7,11 @@ class Equipamento:
     id: int
     nome: str
     tipo: str
-    multa: MultaStrategy
+    multa_strategy: MultaStrategy
     disponivel: bool = True
 
     def calcular_multa(self, dias_atraso: int) -> float:
-        return self.multa.calcular(dias_atraso)
+        return self.multa_strategy.calcular(dias_atraso)
 
 
 @dataclass
