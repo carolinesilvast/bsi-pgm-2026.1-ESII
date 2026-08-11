@@ -48,6 +48,28 @@ mais saber como cada notificação é enviada, e também reforça o OCP, já que
 ser adicionados sem modificar o serviço. O DIP também é respeitado, pois o módulo de alto nível 
 depende de abstrações (Observer), não de implementações concretas.
 
+## Aula 12 - Refactoring e Code Smells
+
+### Rede de segurança
+
+O pytest serviu como rede de segurança durante toda a atividade. A cada passo, executar a suíte e vê-la verde autorizava a continuidade. Quando um teste falhou, o passo era desfeito e revista.
+
+Refatorar com testes é seguro: cada mudança é verificada imediatamente. Refatorar sem testes é perigoso: o comportamento pode quebrar silenciosamente. A definição de refactoring exige preservação do comportamento observável - e isso só é verificável com testes.
+
+### Falso positivo - subclasses esvaziadas
+
+As subclasses vazias (Notebook, Projetor, Cabo) aparentam Data Class mas são intencionais: são marcadores de tipo. Aplicar Inline Class desfaria o Strategy e reverteria o OCP obtido. É um falso positivo bem reconhecido.
+
+## Aula 13 - CI/CD e Production Readiness
+
+### Pipeline de CI
+
+A pipeline (lint + testes + cobertura ≥ 80%) automatiza a verificação de qualidade a cada push. O commit de quebra proposital e sua correção demonstram o valor do CI: feedback rápido e rastreável.
+
+### Síntese executiva
+
+Ver production_readiness.md para a análise completa.
+
 O uso de eventos como dict foi uma decisão consciente para simplificar a implementação inicial, 
 mas representa um smell (Primitive Obsession), pois falta tipagem e estrutura formal. 
 Segundo Valente (Cap. 6), essa simplificação é aceitável em fases iniciais, desde que seja refatorada
