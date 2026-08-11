@@ -1,13 +1,13 @@
-import datetime
-from models.fabrica_equipamento import FabricaEquipamento
+from datetime import date
+from models.equipamento import Equipamento
 from models.emprestimo import Emprestimo
+from models.fabrica_equipamento import FabricaEquipamento
 from repositories.interfaces import IRepositorioEmprestimo
 
 
 class RepositorioEmprestimo(IRepositorioEmprestimo):
     def __init__(self):
         criar = FabricaEquipamento.criar
-
         self._equipamentos = [
             criar("notebook", 1, "Notebook Dell"),
             criar("projetor", 2, "Projetor Epson"),
@@ -15,14 +15,20 @@ class RepositorioEmprestimo(IRepositorioEmprestimo):
         ]
         self._emprestimos = []
 
-    def buscar_equipamento(self, id: int):
-        return next((e for e in self._equipamentos if e.id == id), None)
+    def buscar_equipamento(self, id: int) -> Equipamento | None:
+        for e in self._equipamentos:
+            if e.id == id:
+                return e
+        return None
 
     def salvar_emprestimo(self, emprestimo: Emprestimo) -> None:
         self._emprestimos.append(emprestimo)
 
-    def buscar_emprestimo(self, id: int):
-        return next((e for e in self._emprestimos if e.id == id), None)
+    def buscar_emprestimo(self, id: int) -> Emprestimo | None:
+        for e in self._emprestimos:
+            if e.id == id:
+                return e
+        return None
 
     def marcar_indisponivel(self, equip_id: int) -> None:
         equip = self.buscar_equipamento(equip_id)
@@ -39,10 +45,12 @@ class RepositorioEmprestimo(IRepositorioEmprestimo):
         if emp:
             emp.devolvido = True
 
-    def listar_em_atraso(self):
-        hoje = datetime.date.today()
-        return [e for e in self._emprestimos
-                if not e.devolvido and e.data_devolucao < hoje]
+    def listar_em_atraso(self) -> list:
+        hoje = date.today()
+        return [
+            e for e in self._emprestimos
+            if not e.devolvido and e.data_devolucao < hoje
+        ]
 
     def proximo_id_emprestimo(self) -> int:
         return len(self._emprestimos) + 1
