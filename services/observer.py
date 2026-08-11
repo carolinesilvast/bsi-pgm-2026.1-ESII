@@ -2,20 +2,18 @@ from abc import ABC, abstractmethod
 
 
 class Observer(ABC):
-
     @abstractmethod
-    def update(self, evento: dict) -> None:
+    def update(self, evento) -> None:
         pass
 
 
 class Subject:
-
     def __init__(self):
-        self._observers = []
+        self._observers: list[Observer] = []
 
     def registrar_observer(self, obs: Observer) -> None:
         self._observers.append(obs)
 
-    def notificar(self, evento: dict) -> None:
+    def notificar(self, evento) -> None:
         for obs in self._observers:
             obs.update(evento)
